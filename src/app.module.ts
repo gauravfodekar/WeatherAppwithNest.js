@@ -11,9 +11,10 @@ import { UsersController } from './users/users.controller';
 import { AuthService } from './auth/auth.service';
 import { UsersService } from './users/users.service';
 import { MongodBModule } from './mongodb/mongodb.module';
+import { WeatherModule } from './weather/weather.module';
 
 @Module({
-  imports: [AuthModule, UsersModule, MongodBModule, MongodBModule],
+  imports: [AuthModule, UsersModule, MongodBModule, MongodBModule, WeatherModule],
   controllers: [AppController],
   providers: [AppService,
     {
