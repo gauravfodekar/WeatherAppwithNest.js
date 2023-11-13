@@ -5,9 +5,9 @@ import { AuthService } from './auth.service';
 export class AuthController {
     constructor(private authService: AuthService) {}
 
-    @HttpCode(HttpStatus.OK)
-    @Post('login')
-    logIn(@Body() loginDetails: Record<string, any>){
-        return this.authService.logIn(loginDetails.username,loginDetails.pass)
-    }
+    //@HttpCode(HttpStatus.OK)
+    //@Post('login')
+    // logIn(@Body() loginDetails: Record<string, any>){
+    //     return this.authService.logIn(loginDetails.username,loginDetails.pass)
+    // }
 }

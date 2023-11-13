@@ -7,9 +7,10 @@ import { AuthController } from './auth/auth.controller';
 import { UsersController } from './users/users.controller';
 import { AuthService } from './auth/auth.service';
 import { UsersService } from './users/users.service';
+import { MongodBModule } from './mongodb/mongodb.module';
 
 @Module({
-  imports: [AuthModule, UsersModule],
+  imports: [AuthModule, UsersModule, MongodBModule, MongodBModule],
   controllers: [AppController],
   providers: [AppService],
 })
