@@ -10,9 +10,9 @@ export class UsersService {
     constructor(@InjectModel(User.name) private readonly userModel: Model<User>) {}
 
     //register user 
-    async createUser(username: string, pass: string): Promise<User> {
+    async createUser(username: string, pass: string): Promise<Object> {
       // find if duplicate exists.
-      const exist = this.findUserByUsername(username);
+      const exist = await this.findUserByUsername(username);
       if(exist) {
         console.log('User already exists.');
         throw new UnauthorizedException('User already exists.');
@@ -20,7 +20,12 @@ export class UsersService {
       //hashing password - do not store plain password.
       pass = await bcrypt.hash(pass, 10);
       const user = new this.userModel({ username, pass });
-      return user.save();
+      user.save();
+      return { 
+        "_id": user._id,
+        "username": user.username
+      }
+
     }
     // find user by username
     async findUserByUsername(username: string): Promise<User | null> {

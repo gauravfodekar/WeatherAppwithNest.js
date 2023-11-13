@@ -1,6 +1,8 @@
 import { Module, MiddlewareConsumer, NestModule } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
+import { APP_GUARD } from '@nestjs/core';
+import { AuthGuard } from './auth/auth.guard';
 import { CookieParserMiddleware } from './middleware/cookieParser';
 import { AuthModule } from './auth/auth.module';
 import { UsersModule } from './users/users.module';
@@ -13,7 +15,11 @@ import { MongodBModule } from './mongodb/mongodb.module';
 @Module({
   imports: [AuthModule, UsersModule, MongodBModule, MongodBModule],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService,
+    {
+      provide: APP_GUARD,
+      useClass: AuthGuard,
+    },],
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
