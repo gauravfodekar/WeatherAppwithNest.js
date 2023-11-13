@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable , UnauthorizedException} from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import * as bcrypt from 'bcrypt';
 import { Model } from 'mongoose';
@@ -14,7 +14,8 @@ export class UsersService {
       // find if duplicate exists.
       const exist = this.findUserByUsername(username);
       if(exist) {
-        console.log('User already exists.')
+        console.log('User already exists.');
+        throw new UnauthorizedException('User already exists.');
       }
       //hashing password - do not store plain password.
       pass = await bcrypt.hash(pass, 10);
