@@ -12,9 +12,17 @@ import { AuthService } from './auth/auth.service';
 import { UsersService } from './users/users.service';
 import { MongodBModule } from './mongodb/mongodb.module';
 import { WeatherModule } from './weather/weather.module';
+import { ConfigModule } from '@nestjs/config/dist';
+import { MongooseModule } from '@nestjs/mongoose';
 
 @Module({
-  imports: [AuthModule, UsersModule, MongodBModule, MongodBModule, WeatherModule],
+  imports: [
+    ConfigModule.forRoot({
+      envFilePath:'.env',
+      isGlobal: true
+  }),
+  MongooseModule.forRoot(process.env.DB_URI),
+    AuthModule, UsersModule, WeatherModule],
   controllers: [AppController],
   providers: [AppService,
     {
@@ -25,6 +33,7 @@ import { WeatherModule } from './weather/weather.module';
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
     // Register CookieParserMiddleware as middleware for all routes
+    console.log('DB_URI:', process.env.DB_URI);
     consumer.apply(CookieParserMiddleware).forRoutes('*');
   }
 }
