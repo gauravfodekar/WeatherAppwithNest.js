@@ -6,14 +6,10 @@ import { AuthGuard } from './auth/auth.guard';
 import { CookieParserMiddleware } from './middleware/cookieParser';
 import { AuthModule } from './auth/auth.module';
 import { UsersModule } from './users/users.module';
-import { AuthController } from './auth/auth.controller';
-import { UsersController } from './users/users.controller';
-import { AuthService } from './auth/auth.service';
-import { UsersService } from './users/users.service';
-import { MongodBModule } from './mongodb/mongodb.module';
 import { WeatherModule } from './weather/weather.module';
 import { ConfigModule } from '@nestjs/config/dist';
 import { MongooseModule } from '@nestjs/mongoose';
+import { SessionToken, SessionSchema } from 'src/schema/session.schema';
 
 @Module({
   imports: [
@@ -21,6 +17,7 @@ import { MongooseModule } from '@nestjs/mongoose';
       envFilePath:'.env',
       isGlobal: true
   }),
+  MongooseModule.forFeature([{ name: SessionToken.name, schema: SessionSchema }]),
   MongooseModule.forRoot(process.env.DB_URI),
     AuthModule, UsersModule, WeatherModule],
   controllers: [AppController],

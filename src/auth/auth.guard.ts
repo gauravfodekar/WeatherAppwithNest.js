@@ -4,15 +4,20 @@ import {
     Injectable,
     UnauthorizedException,
   } from '@nestjs/common';
+  
+  import { InjectModel } from '@nestjs/mongoose';
+  import { Model } from 'mongoose';
   import { Reflector } from '@nestjs/core';
   import { JwtService } from '@nestjs/jwt';
   import { Request } from 'express';
   import { jwtConstants } from './constants';
   import { IS_PUBLIC_KEY } from './decorators/public.decorator';
+  import { SessionToken } from 'src/schema/session.schema';
   
   @Injectable()
   export class AuthGuard implements CanActivate {
     constructor(
+      @InjectModel(SessionToken.name) private readonly sessionModel: Model<SessionToken>,
       private jwtService: JwtService,
       private reflector: Reflector,
     ) {}
@@ -33,6 +38,12 @@ import {
         throw new UnauthorizedException();
       }
       try {
+        //check if token is logged out token
+        const loggedOut = await this.getTokenStatus(token);
+        if (!loggedOut) {
+          throw new UnauthorizedException();
+        }
+        // TODO: we can use decryption method here if token encrypted
         const payload = await this.jwtService.verifyAsync(token, {
           secret: jwtConstants.secret,
         });
@@ -48,5 +59,9 @@ import {
     private extractTokenFromHeader(request: Request): string | undefined {
       const [type, token] = request.headers.authorization?.split(' ') ?? [];
       return type === 'Bearer' ? token : undefined;
+    }
+
+    private getTokenStatus(sessionToken: string): Promise<any> {
+      return this.sessionModel.findOne({ token: sessionToken, status: 'true' }).exec();
     }
   }

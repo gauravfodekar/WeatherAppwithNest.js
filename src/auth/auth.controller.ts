@@ -16,6 +16,15 @@ export class AuthController {
         console.log(error);
        }
     }
+    @Public() // This route is excluded from the AuthGuard
+    @Post('logout')
+    logOut(@Body() logoutDetails: Record<string, any>){
+       try {
+        return this.authService.logOut(logoutDetails.token)
+       }catch(error){
+        console.log(error);
+       }
+    }
     @Get('profile')
   getProfile(@Request() req) {
     return req.user;

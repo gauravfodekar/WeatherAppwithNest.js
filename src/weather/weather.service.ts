@@ -15,7 +15,7 @@ export class WeatherService {
                     zip:zipCode,
                     lat,
                     lon:long,
-                    appid: 'c6d3904f065baa14b9245f8e48dcadae',
+                    appid: process.env.WEATHER_API_KEY,
                   },
                 });
               }catch(error){
@@ -34,7 +34,7 @@ export class WeatherService {
                     lat: lat || currentWeatherData.coord.lat,
                     lon: long || currentWeatherData.coord.lon,
                     dt: Math.floor(yesterdayDate.getTime() / 1000),
-                    appid: 'c6d3904f065baa14b9245f8e48dcadae',
+                    appid: process.env.WEATHER_API_KEY,
                   },
                 });
               }catch(error){
@@ -62,7 +62,7 @@ export class WeatherService {
             return await axios.get('https://api.openweathermap.org/data/2.5/weather', {
               params: {
                 q: location,
-                appid: 'c6d3904f065baa14b9245f8e48dcadae',
+                appid: process.env.WEATHER_API_KEY,
               },
             });
           }));
