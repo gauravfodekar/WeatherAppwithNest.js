@@ -51,22 +51,42 @@ export class WeatherService {
           
     }
 
-    async weatherAllDetails(allLocations: any ): Promise<Object> {  
+    async weatherAllDetails(zipCode:any ,lat: any, long: any, country: string ): Promise<Object> {  
             
       let weatherResponse: any;
        // Get current weather
         try{
-          allLocations = allLocations.replace(/'/g, '"');
-          allLocations = JSON.parse(allLocations);
-          const weatherResponses = await Promise.all(allLocations.map( async (location: any): Promise<any> => {
-            return await axios.get('https://api.openweathermap.org/data/2.5/weather', {
-              params: {
-                q: location,
-                appid: process.env.WEATHER_API_KEY,
-              },
-            });
-          }));
-          weatherResponse = weatherResponses.map(response => response.data);
+          zipCode = zipCode ? zipCode.split(','): []
+          lat = lat ? lat.split(','): [];
+          long = long ? long.split(','): [];
+          
+          // get the data against zip codes
+          if(zipCode.length) {
+            zipCode = zipCode.map( (zip: any) => `${zip},${country? country : 'us'}`);
+            const weatherResponses = await Promise.all(zipCode.map( async (location: any): Promise<any> => {
+              return await axios.get('https://api.openweathermap.org/data/2.5/weather', {
+                  params: {
+                    zip:location,
+                    appid: process.env.WEATHER_API_KEY,
+                  },
+                });
+            }));
+            weatherResponse = weatherResponses.map(response => response.data);
+          }
+          //get data for bulk latt and long.
+          if ((lat.length && long.length)&& (lat.length === long.length)) {
+            const weatherResponses = await Promise.all(lat.map( async (latitude: any, index: number): Promise<any> => {
+              return await axios.get('https://api.openweathermap.org/data/2.5/weather', {
+                params: {
+                  lat: latitude,
+                  lon:long[index],
+                  appid: process.env.WEATHER_API_KEY,
+                },
+              })
+            }));
+            weatherResponse = weatherResponses.map(response => response.data);
+          }
+         
         }catch(error){
           throw new HttpException('Please provide either a correct ZIP code or latitude and longitude.', HttpStatus.NO_CONTENT);
         }       

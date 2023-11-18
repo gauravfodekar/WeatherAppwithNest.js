@@ -21,17 +21,21 @@ export class WeatherController {
 
     @Get('weather-for-all')
     getAllData(
-        @Query('zipCode') zipCode: Array<any>=[],
-        @Query('lat') lat: Array<any>=[],
-        @Query('long') long:Array<any>=[],
+        @Query('zipCode') zipCode: string,
+        @Query('lat') lat: any,
+        @Query('long') long: any,
+        @Query('country') country: string //default US
         ): Record<string, any> {
-            if (!zipCode.length && (!lat.length || !long.length)) {
+            if (!zipCode && (!lat || !long)) {
                 throw new HttpException('Please provide either a ZIP code or latitude and longitude.', HttpStatus.BAD_REQUEST);
             }
-             // Combine all locations into a single array
-         // Combine all locations into a single array
-            const allLocations = zipCode.concat(lat.map((lat, index) => `${lat},${long[index]}`));
-            return this.weatherService.weatherAllDetails(allLocations);
+            //todo: add validations for inputs.
+            try {
+                //const allLocations = zipCode.concat(lat.map((lat, index) => `${lat},${long[index]}`));
+                return this.weatherService.weatherAllDetails(zipCode,lat, long,country);
+            }catch(error){
+                console.log(error);
+            }
     }
 
 }

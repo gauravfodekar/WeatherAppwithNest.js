@@ -51,8 +51,10 @@ describe('WeatherController', () => {
   describe('getAllData', () => {
     it('should return weather details for multiple locations', async () => {
       // Arrange
-      const locations = ['12345', '40,50', '45,55'];
-
+      const zipCode = '12345';
+      const lat = undefined;
+      const long = undefined;
+      const country = 'in';
       const allWeatherDetails = {
         weatherResponse: [
           // Weather data for each location
@@ -62,8 +64,7 @@ describe('WeatherController', () => {
       jest.spyOn(weatherService, 'weatherAllDetails').mockResolvedValue(allWeatherDetails);
 
       // Act
-      const result = await weatherController.getAllData(locations, [], []);
-
+      const result = await weatherController.getAllData(zipCode, lat, long, country);
       // Assert
       expect(result).toEqual(allWeatherDetails);
     });
