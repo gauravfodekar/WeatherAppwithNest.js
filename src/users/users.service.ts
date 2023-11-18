@@ -2,13 +2,13 @@ import { Injectable , UnauthorizedException} from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import * as bcrypt from 'bcrypt';
 import { Model } from 'mongoose';
-import { User, UserSchema } from 'src/schema/user.schema';
+import { User, UserSchema } from '../schema/user.schema';
 
 // This should be a real class/interface representing a user entity
 @Injectable()
 export class UsersService {
-    constructor(@InjectModel(User.name) private readonly userModel: Model<User>) {}
-
+  constructor(@InjectModel(User.name) private readonly userModel: Model<User>) { }
+  
     //register user 
     async createUser(username: string, pass: string): Promise<Object> {
       // find if duplicate exists.
@@ -19,8 +19,7 @@ export class UsersService {
       }
       //hashing password - do not store plain password.
       pass = await bcrypt.hash(pass, 10);
-      const user = new this.userModel({ username, pass });
-      user.save();
+      const user = await this.userModel.create({ username, pass });
       return { 
         "_id": user._id,
         "username": user.username
